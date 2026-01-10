@@ -1,4 +1,5 @@
 import { makeCreateExpenseUseCase } from "./use-cases/factorories/create-expense-factory.js"
+import { makeDeleteExpenseUseCase } from "./use-cases/factorories/delete-expense-factory.js"
 import { makeFetchExpenseUseCase } from "./use-cases/factorories/fetch-all-expense-factory.js"
 
 const [,, command, ...args] = process.argv
@@ -39,7 +40,20 @@ export async function run(){
     
     console.table(expense)
   }
-  
+  break;
+  case "delete":{
+    const id  = args[0] as string
+
+    if(!id){
+      console.log('Use: npm run expense -- delete <id>')
+    }
+
+    const makeDeleteUseCase = makeDeleteExpenseUseCase()
+    await makeDeleteUseCase.execute({id})
+
+    console.log(`❌ Expense ${id} deleted sucessfully`)
+  }
+  break;
     default:
       break;
   }

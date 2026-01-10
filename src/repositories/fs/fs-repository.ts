@@ -3,7 +3,42 @@ import type { ExpenseTracker, ExpenseTrackerRepository } from '../expense-tracke
 import path from 'node:path';
 
 export class FsRepository implements ExpenseTrackerRepository{
-  private filePath = path.resolve(process.cwd(), 'db.json')
+
+   private filePath = path.resolve(process.cwd(), 'db.json')
+  async update(id: string): Promise<ExpenseTracker[]> {
+    throw new Error('Method not implemented.');
+  }
+
+  async delete(id: string): Promise<ExpenseTracker> {
+    const expense = await this.findAll()
+
+    const  deleteExpense =  expense.find( item => item.id === id)
+    
+    if(!deleteExpense){
+      throw new Error('Id not found, try again!')
+    }
+    const newExpense = expense.filter(item => item.id !== id)
+
+    await fs.writeFile(
+      this.filePath,
+      JSON.stringify(newExpense, null, 2),
+      'utf-8'
+    )
+
+    return deleteExpense
+  }
+  
+   async findById(id: string): Promise<ExpenseTracker[]> {
+    const expense = await this.findAll()
+    const expenseId = expense.filter( item => item.id === id)
+    
+    if(!expenseId){
+      throw new Error('Id not found')
+    }
+
+    return expenseId
+  }
+ 
 
   async findAll(): Promise<ExpenseTracker[]> {
     try {
