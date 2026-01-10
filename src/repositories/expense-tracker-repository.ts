@@ -2,7 +2,7 @@ export interface ExpenseTracker{
   id: string
   date: Date
   description: string
-  amount : string
+  amount : number
 
 }
 

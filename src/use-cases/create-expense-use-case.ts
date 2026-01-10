@@ -1,7 +1,7 @@
 import type { ExpenseTracker, ExpenseTrackerRepository } from "../repositories/expense-tracker-repository.js";
 interface CreateExpenseRequest{
   description: string
-  amount: string
+  amount: number
 }
 
 interface CreateExpenseResponse{
