@@ -1,8 +1,8 @@
-import { time } from "node:console"
 import { makeCreateExpenseUseCase } from "./use-cases/factorories/create-expense-factory.js"
 import { makeDeleteExpenseUseCase } from "./use-cases/factorories/delete-expense-factory.js"
 import { makeFetchExpenseUseCase } from "./use-cases/factorories/fetch-all-expense-factory.js"
 import { makeSummaryAllExpenseUseCase } from "./use-cases/factorories/summary-all-expense-factory.js"
+import { makeUpdateExpenseUseCase } from "./use-cases/factorories/update-expense-factory.js"
 
 const [,, command, ...args] = process.argv
 
@@ -88,6 +88,30 @@ export async function run(){
    console.log(`Summary expenses: R$${total}`)
   }
   break
+  case 'update':{
+    const id = args[0] as string
+    const description = getFlagValue('--description')  as string
+    const amountStr = getFlagValue('--amount')
+    const amount = Number(amountStr)
+    
+    if(!id){
+      console.log('Id not found, Use: npx tsx update <id> --description or --amount')
+      return
+    }
+
+    if(! description || amount){
+      return console.log(' Write --description <value> or --amount <value>')
+    }
+
+    const makeUpdateUseCase = makeUpdateExpenseUseCase()
+    await makeUpdateUseCase.execute({
+      id,
+      description,
+      amount,
+    })
+
+    console.log(`✅ Expense ${id} updated successful!`);
+  }
     default:
       break;
   }

@@ -33,8 +33,32 @@ export class FsRepository implements ExpenseTrackerRepository{
     return summary
   }
 
-  async update(id: string): Promise<ExpenseTracker[]> {
-    throw new Error('Method not implemented.');
+  async update(data: ExpenseTracker): Promise<ExpenseTracker> {
+    const expenses = await this.findAll()
+
+    const expense = expenses.map(item => {
+      if(item.id === data.id){
+        return {
+          ...item,
+          ...data
+        }
+      }
+      return item
+    })
+
+    const existsExpense = expense.some(item => item.id === data.id)
+    if(!existsExpense){
+     throw new Error(' Expense not found ')
+    }
+
+    await fs.writeFile(
+      this.filePath,
+      JSON.stringify(expense, null, 2),
+      'utf-8'
+    )
+
+    return {...data}
+
   }
 
   async delete(id: string): Promise<ExpenseTracker> {
@@ -56,9 +80,9 @@ export class FsRepository implements ExpenseTrackerRepository{
     return deleteExpense
   }
   
-   async findById(id: string): Promise<ExpenseTracker[]> {
+   async findById(id: string): Promise<ExpenseTracker> {
     const expense = await this.findAll()
-    const expenseId = expense.filter( item => item.id === id)
+    const expenseId = expense.find( item => item.id === id)
     
     if(!expenseId){
       throw new Error('Id not found')

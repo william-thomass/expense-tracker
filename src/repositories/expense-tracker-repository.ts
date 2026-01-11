@@ -9,8 +9,8 @@ export interface ExpenseTracker{
 export interface ExpenseTrackerRepository{
   create(data: Omit<ExpenseTracker, 'id' | 'date'>):Promise<ExpenseTracker>
   findAll(data?: ExpenseTracker): Promise<ExpenseTracker[]>
-  findById(id: string): Promise<ExpenseTracker[]>
-  update(id:string): Promise<ExpenseTracker[]>
+  findById(id: string): Promise<ExpenseTracker>
+  update(data:ExpenseTracker): Promise<ExpenseTracker>
   delete(id:string): Promise<ExpenseTracker>
   summary(month?: string):Promise<number>
 }
