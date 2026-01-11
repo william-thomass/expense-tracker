@@ -1,6 +1,6 @@
-import type { ExpenseTracker, ExpenseTrackerRepository } from "../repositories/expense-tracker-repository.js";
+import type { ExpenseTrackerRepository } from "../repositories/expense-tracker-repository.js";
 interface SummaryAllExpenseRequest{
-  
+  month?: string | undefined
 }
 
 interface SummaryAllExpenseResponse{
@@ -8,11 +8,15 @@ interface SummaryAllExpenseResponse{
 }
 
 export class SummaryAllExpenseUseCase{
-  constructor(private expenseRespository: ExpenseTrackerRepository ){}
+  constructor(private expenseRepository: ExpenseTrackerRepository ){}
 
-  async execute():Promise<SummaryAllExpenseResponse>{
+  async execute({
+    month,
+  }:SummaryAllExpenseRequest):Promise<SummaryAllExpenseResponse>{
 
-const summary = await this.expenseRespository.summary()
+   
+
+  const summary = await this.expenseRepository.summary(month)
 
     return {total: summary}
   }

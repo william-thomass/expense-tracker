@@ -80,10 +80,12 @@ export async function run(){
   }
   break;
   case "summary":{
-    const summaryAllExpenseUseCase = makeSummaryAllExpenseUseCase()
-    const {total} = await summaryAllExpenseUseCase.execute()
+    const  month  = getFlagValue('--month')
 
-    console.log(`Summary expenses: R$${total}`)
+    const summaryAllExpenseUseCase = makeSummaryAllExpenseUseCase()
+    const {total} = await summaryAllExpenseUseCase.execute({month : month || undefined})
+
+   console.log(`Summary expenses: R$${total}`)
   }
   break
     default:

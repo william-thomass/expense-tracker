@@ -7,15 +7,30 @@ import path from 'node:path';
 export class FsRepository implements ExpenseTrackerRepository{
  private filePath = path.resolve(process.cwd(), 'db.json')
 
-  async summary(): Promise<number> {
-    const expense = await this.findAll()
-    const summaryAmount = expense.filter(values => values.amount > 0)
+  async summary(month?: string): Promise<number> {
+    let expenses = await this.findAll()
+
+    if(month){
+      const monthId = Number(month) - 1  // janery = 0
+
+      
+
+      expenses = expenses.filter(item => {
+        const expenseDate = new Date(item.date)
+        const isMonth = expenseDate.getMonth() === monthId
+        const isYear = expenseDate.getFullYear() === 2026
+
+        return isMonth && isYear
+      })
+    }
+
     
-    const summarySum = summaryAmount.reduce((accumulator, summaryAmount) =>{
+
+    const summary = expenses.reduce((accumulator, summaryAmount) =>{
       return accumulator + summaryAmount.amount
     }, 0)
     
-    return summarySum
+    return summary
   }
 
   async update(id: string): Promise<ExpenseTracker[]> {

@@ -12,5 +12,5 @@ export interface ExpenseTrackerRepository{
   findById(id: string): Promise<ExpenseTracker[]>
   update(id:string): Promise<ExpenseTracker[]>
   delete(id:string): Promise<ExpenseTracker>
-  summary(amount?: number):Promise<number>
+  summary(month?: string):Promise<number>
 }
