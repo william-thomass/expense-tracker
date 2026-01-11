@@ -1,17 +1,42 @@
+import { time } from "node:console"
 import { makeCreateExpenseUseCase } from "./use-cases/factorories/create-expense-factory.js"
 import { makeDeleteExpenseUseCase } from "./use-cases/factorories/delete-expense-factory.js"
 import { makeFetchExpenseUseCase } from "./use-cases/factorories/fetch-all-expense-factory.js"
+import { makeSummaryAllExpenseUseCase } from "./use-cases/factorories/summary-all-expense-factory.js"
 
 const [,, command, ...args] = process.argv
+
+function getFlagValue(flag: string): string | null {
+  const flagIndex = args.indexOf(flag)
+  
+ 
+  if (flagIndex === -1) return null
+
+  const valueStartIndex = flagIndex + 1
+  
+ 
+  const nextFlagIndex = args.findIndex((arg, index) => 
+    index > flagIndex && arg.startsWith('--')
+  );
+
+
+  const valueEndIndex = nextFlagIndex !== -1 ? nextFlagIndex : args.length
+
+
+  return args.slice(valueStartIndex, valueEndIndex).join(' ').trim()
+}
 
 export async function run(){
 
   switch (command) {
     case 'add':{
-      const description = args[0]
-      const amount  = Number(args[1])
+
       
-    
+      const description = getFlagValue('--description')
+      const amountStr  = getFlagValue('--amount')
+      const amount = Number(amountStr) 
+      
+
 
     if(!description || !amount){
      return console.log(`Description and amount is requireted`)
@@ -54,6 +79,13 @@ export async function run(){
     console.log(`❌ Expense ${id} deleted sucessfully`)
   }
   break;
+  case "summary":{
+    const summaryAllExpenseUseCase = makeSummaryAllExpenseUseCase()
+    const {total} = await summaryAllExpenseUseCase.execute()
+
+    console.log(`Summary expenses: R$${total}`)
+  }
+  break
     default:
       break;
   }

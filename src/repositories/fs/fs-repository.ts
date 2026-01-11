@@ -2,9 +2,22 @@ import fs from 'node:fs/promises'
 import type { ExpenseTracker, ExpenseTrackerRepository } from '../expense-tracker-repository.js';
 import path from 'node:path';
 
-export class FsRepository implements ExpenseTrackerRepository{
 
-   private filePath = path.resolve(process.cwd(), 'db.json')
+
+export class FsRepository implements ExpenseTrackerRepository{
+ private filePath = path.resolve(process.cwd(), 'db.json')
+
+  async summary(): Promise<number> {
+    const expense = await this.findAll()
+    const summaryAmount = expense.filter(values => values.amount > 0)
+    
+    const summarySum = summaryAmount.reduce((accumulator, summaryAmount) =>{
+      return accumulator + summaryAmount.amount
+    }, 0)
+    
+    return summarySum
+  }
+
   async update(id: string): Promise<ExpenseTracker[]> {
     throw new Error('Method not implemented.');
   }
@@ -73,5 +86,6 @@ export class FsRepository implements ExpenseTrackerRepository{
 
  return newExpense
   }
+
 
 }
